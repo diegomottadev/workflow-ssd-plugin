@@ -1,0 +1,16 @@
+{
+  "name": "workflow-ssd",
+  "version": "1.0.0",
+  "description": "Spec-Driven Development (SSD) framework featuring strict TDD, agent orchestration, OpenSpec, and requirements pipeline",
+  "author": {
+    "name": "Diego Motta"
+  },
+  "keywords": [
+    "openspec",
+    "spec-driven",
+    "tdd",
+    "workflow",
+    "architecture",
+    "requirements"
+  ]
+}

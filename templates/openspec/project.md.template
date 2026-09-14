@@ -1,0 +1,44 @@
+# project.md — Context for {{PROJECT_NAME}} (OpenSpec)
+
+> **Minimal project context required for Spec-Driven Development.**
+> This document describes the purpose of the system, main functional domains, and cross-cutting constraints that every spec must follow.
+
+---
+
+## 🏢 What is {{PROJECT_NAME}}
+
+{{PROJECT_DESCRIPTION}}
+
+- **Stack:** {{STACK_SUMMARY}} (e.g. Node.js 20, TypeScript, PostgreSQL, React).
+- **Core Entities:** {{CORE_ENTITIES}} (e.g. User, Order, Invoice).
+- **Business & Code Language:** {{PROJECT_LANGUAGE}} (English / Spanish).
+
+---
+
+## 📦 Spec Domains (Folders in `openspec/specs/`)
+
+| Domain | Scope | Reference Documentation |
+|---|---|---|
+| `{{DOMAIN_1}}` | {{DESCRIPTION_DOMAIN_1}} | docs/... |
+| `{{DOMAIN_2}}` | {{DESCRIPTION_DOMAIN_2}} | docs/... |
+
+> 💡 **To add a new domain:** create the directory `openspec/specs/<new-domain>/` with its `spec.md` (the WHAT) and `circuit.md` (the HOW) based on OpenSpec templates.
+
+---
+
+## 🛑 Constraints that EVERY Spec / Design Must Follow
+
+- **Runtime Version:** {{RUNTIME_RESTRICTIONS}}
+- **Persistence Patterns:** {{DATABASE_PERSISTENCE_RULES}}
+- **Migration Strategy:** {{MIGRATIONS_STRATEGY}}
+- **Security & Authorization:** {{AUTH_AND_PERMISSIONS_RULES}}
+- **High-Risk Modules:** {{HIGH_RISK_FILES_OR_MODULES}}
+
+---
+
+## 🧭 Source of Truth
+
+- **What the system does today:** `openspec/specs/<domain>/spec.md` (living specifications).
+- **How it runs internally:** `openspec/specs/<domain>/circuit.md` (living technical flow).
+- **What is currently being changed:** `openspec/changes/<change-name>/`.
+- **History of completed changes:** `openspec/archive/`.

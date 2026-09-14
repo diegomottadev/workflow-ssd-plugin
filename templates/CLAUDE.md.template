@@ -1,0 +1,106 @@
+# {{PROJECT_NAME}} — {{PROJECT_SHORT_DESCRIPTION}}
+
+Platform belonging to **{{COMPANY_OR_ORG_NAME}}** where {{USER_ROLES_AND_PURPOSE}} process **{{CORE_ENTITY_PLURAL}}**
+(`{{CORE_ENTITY}}`, the central entity): {{CORE_BUSINESS_FLOW_DESCRIPTION}}. It is a **{{SYSTEM_TYPE_E_G_MONOLITH_OR_MICROSERVICE}} in production** — the top priority is to keep existing features working without regression.
+
+**Always respond in English**, including code comments and docstrings.
+
+---
+
+## 🛠️ Tech Stack
+
+| Component | Version / Technology | Command / Execution Notes |
+|---|---|---|
+| Runtime / Language | **{{RUNTIME_VERSION}}** (`{{RUNTIME_PATH_OR_CMD}}`) | Official syntax and runtime |
+| Framework | **{{FRAMEWORK_NAME}}** · {{ORM_NAME_AND_VERSION}} | {{FRAMEWORK_CLI_CMD}} |
+| Database | **{{DATABASE_ENGINE}}** (`{{DB_NAME}}` @ `{{DB_HOST}}`) | Controlled access / Connection pool |
+| Frontend | **{{FRONTEND_STACK}}** | User views and components |
+| Testing | **{{TEST_FRAMEWORK}}** | Unit, integration, and E2E tests |
+
+Code in `{{SRC_DIRECTORY}}`. Views/UI in `{{VIEWS_DIRECTORY}}`. Integrations: `{{EXTERNAL_INTEGRATIONS_LIST}}`.
+
+---
+
+## 🚀 How to Work Here
+
+All operations run from `{{WORKING_DIRECTORY}}`.
+
+```bash
+# Install dependencies
+{{INSTALL_DEPENDENCIES_CMD}}
+
+# Clear cache / build assets
+{{CACHE_CLEAR_CMD}}
+
+# Local dev server
+{{DEV_SERVER_CMD}}
+```
+
+**How to verify a change** (always display the real terminal output; do not summarize):
+
+```bash
+{{LINT_COMMAND}}             # Static analysis and linter
+{{LINT_VIEWS_COMMAND}}       # Template/UI linter if applicable
+{{CACHE_CLEAR_CMD}}          # Clear application cache
+{{TEST_COMMAND}}             # Automated tests (showing [PASS]/[FAIL])
+{{E2E_TEST_COMMAND}}         # End-to-End tests if applicable
+```
+
+**Database testing guidelines**:
+- Every test running against a real database must run inside a transaction with rollback, or clean up its own inserted IDs.
+- Mocks and stubs should be used for external third-party APIs during unit tests.
+
+---
+
+## 🛑 Hard Constraints (Breaking these damages production)
+
+- **{{RUNTIME_VERSION}}**: Strictly respect the declared language version without using newer unsupported syntax.
+- **Soft Delete Policies**: Always use logical deletion (`{{SOFT_DELETE_FIELD}}` or status change), never raw physical `DELETE` unless explicitly permitted.
+- **Tenant / User Isolation**: Queries and listings must filter by the authenticated user or organization.
+- **Database Safety Rule:**
+  - In **test / local**, write ONLY records created by the test itself, and clean up ONLY those records.
+  - **NEVER:** Run `DROP`, `TRUNCATE`, destructive migrations, or modify unrelated production data.
+- **High-Risk Files:** Pay extra attention when touching critical files (`{{HIGH_RISK_FILES}}`).
+- **Never run `git commit` automatically:** Only prepare structured commit messages with `/commit` and wait for user confirmation.
+- **Logs and Documentation:** Keep all notes and artifacts inside project docs or `openspec/`, never leave loose temp files.
+
+---
+
+## 🗺️ Where to Find What You Need
+
+| Need | Go to |
+|---|---|
+| **What a domain does today (the WHAT, source of truth)** | [`openspec/specs/<domain>/spec.md`](openspec/specs/) |
+| **How it runs internally (the HOW: execution path, files)** | [`openspec/specs/<domain>/circuit.md`](openspec/specs/) — written during the **sync** step |
+| **Code patterns before writing code** | Skills: `architecture-first`, `coding-patterns`, `tdd-workflow` |
+| **Writing code with tests (TDD cycle)** | **Order: 1 `tdd-test-writer` 🔴 RED · 2 `tdd-implementer` 🟢 GREEN · 3 `tdd-refactorer` 🔵 REFACTOR.** Orchestrated by `/feature` and `/change apply`. `fullstack-developer` is reserved for scoped quick fixes via `/change ff`. |
+| **Work with specifications (feature or refactor)** | Slash command `/change` · OpenSpec framework |
+| **Turn raw business requirements into tickets** | Slash command `/requirement` — runs 7 stages with approval gates (orchestrating `agents/product-agent/`) |
+
+---
+
+## 🔄 OpenSpec Methodology & Workflow
+
+The project uses a strict Spec-Driven Development workflow based on [OpenSpec](https://github.com/Fission-AI/OpenSpec):
+
+```
+propose ──► ⛔ GATE ──► analyze ──► apply ──► verify ──► sync ──► archive
+              │            │                   │                    │
+       Quality check +   Simulate loop       Completeness:        Merge delta
+       scope guardrail   WITHOUT writing:    100% requirements    into living
+                         Is it executable?   verified + checked   spec
+```
+
+### Safety Guardrails
+1. **Gate Checklist**: Prevents scope creep and missing Given-When-Then scenarios before touching code.
+2. **`analyze`**: Read-only dry run checking if tasks are executable in order.
+3. **`verify`**: Ensures 100% of delta requirements have passing tests and checked tasks.
+4. **`archive`**: Ensures living specs (`spec.md` and `circuit.md`) are updated before closing the change.
+
+---
+
+## ⚡ Change Tracks: `/change` is the Only Entry to Code
+
+1. **Standard Track (`/change propose <name>`):** Full cycle for features and refactors with complete TDD.
+2. **Fast-Forward Track (`/change ff <name>`):** Quick path for small bugfixes or minor changes with living spec updates.
+3. **Read-Only Track (`/change explore <idea>`):** Codebase exploration without modifying disk files.
