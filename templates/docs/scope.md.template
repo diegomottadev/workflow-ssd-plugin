@@ -1,0 +1,25 @@
+# Scope: <title>
+
+- **Slug:** `<slug>`
+- **Status:** `draft` <!-- draft | active | done -->
+- **Created:** <YYYY-MM-DD>
+- **Last Updated:** <YYYY-MM-DD>
+
+## Idea
+<The raw product idea in 2-4 sentences — why this matters, who it's for, what problem it solves.>
+
+## Build Order
+Coarse-grained phases in the order they'll be tackled. A phase is not a ticket — it becomes one or more `/change` (or `/refine`) entries once it's ready to be sliced into atomic work.
+
+| # | Phase | Status | Linked Change(s) |
+|---|---|---|---|
+| 1 | <phase name> | `not-started` | — |
+
+## Out of Scope (for now)
+<What this idea deliberately does NOT cover yet — guards against scope creep at the idea level, not just per-change.>
+
+## Open Questions
+<Unresolved product/technical questions blocking a phase from starting. Empty if none.>
+
+## Change Log
+<Append-only, newest first. e.g. "2026-09-18: Phase 2 started via `/change propose webhook-retries`">

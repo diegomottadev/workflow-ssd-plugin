@@ -48,12 +48,14 @@ openspec/
 Create the following directories:
 - `docs/stories/` (for INVEST user stories)
 - `docs/tickets/` (for technical tickets ready for implementation)
+- `docs/scope/` (for living scope documents — one per initiative, created via `/scope new`)
 
 Seed each with a master index file, if it does not already exist:
 - `docs/stories/README.md` ← from `templates/docs/stories-index.md.template`
 - `docs/tickets/README.md` ← from `templates/docs/tickets-index.md.template`
+- `docs/scope/README.md` ← from `templates/docs/scope-index.md.template`
 
-🔑 **Why this matters:** `/change propose|ff` and standard-mode `/refine` write `stories.md`/`tasks.md` **inside** `openspec/changes/<name>/`, not under `docs/`. Only `/refine --deep` writes standalone files directly into `docs/stories/`/`docs/tickets/`. Without these index files, anything produced by the fast track is invisible from `docs/`. `/change propose|ff` and the deep pipeline (stages 5–6) both register a row here — see `commands/change.md` and `agents/product-agent/05-invest-stories.md` / `06-ticket-generator.md`.
+🔑 **Why this matters:** `/change propose|ff` and standard-mode `/refine` write `stories.md`/`tasks.md` **inside** `openspec/changes/<name>/`, not under `docs/`. Only `/refine --deep` writes standalone files directly into `docs/stories/`/`docs/tickets/`. Without these index files, anything produced by the fast track is invisible from `docs/`. `/change propose|ff` and the deep pipeline (stages 5–6) both register a row here — see `commands/change.md` and `agents/product-agent/05-invest-stories.md` / `06-ticket-generator.md`. `docs/scope/README.md` is separate: it indexes coarse, long-lived initiatives (`/scope`), not individual stories or tickets.
 
 ### 4. Suggest `/audit` for Monorepos (Conditional)
 If the project shows multi-area signals (a monorepo tool config — `turbo.json`, `pnpm-workspace.yaml`, `lerna.json`, `nx.json` — or multiple manifests under `apps/`, `packages/`, `services/`), tell the user they can run `/audit` afterward to generate nested `AGENTS.md` files per area. Do not run it automatically — `CLAUDE.md` alone is enough for a single cohesive app.
@@ -66,9 +68,11 @@ Upon completion, present a summary report containing:
 1. Created files and directories.
 2. Next steps to complete `CLAUDE.md` and `openspec/project.md`.
 3. Ready-to-use commands:
+   - `/scope new <idea>`: To turn a raw idea into a living, coarse scope document before slicing it up.
    - `/change explore <idea>`: To research an idea without creating files.
    - `/change propose <idea>`: To draft a change proposal and spec delta.
    - `/feature <ticket>`: To implement a ticket using strict TDD (🔴 Red → 🟢 Green → 🔵 Refactor).
+   - `/change review <name>`: To get an independent code review before merging (required at `Depth: ga`).
    - `/debug <bug description>`: To root-cause a bug before fixing it.
    - `/commit`: To generate a structured Conventional Commit message.
    - `/document pr`: To draft a PR description, changelog entry, release note, or postmortem.

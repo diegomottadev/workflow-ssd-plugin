@@ -50,6 +50,14 @@ Check the `CLAUDE.md` file in the project root to inspect:
 
 ---
 
+## 🚦 Decision-Owed Gate — Before Writing Any Code
+
+Every provider, library, or data-model choice you're about to write must have a **named source**: `design.md` states it explicitly, or an existing analogous file in the codebase already does it that way (rule 2 above, skill `architecture-first`).
+
+**No named source? Stop. Do not invent one.** Report the missing decision to the user and recommend escalating to `/change propose` instead of building it. Even inside a fast-forward fix (`/change ff`), a choice like "which retry library" or "how do we shape this new field" is an architecture decision, not an implementation detail — no matter how small the surrounding change looks.
+
+---
+
 ## Pre-Delivery Verification
 
 Always verify syntax and static analysis using project commands:

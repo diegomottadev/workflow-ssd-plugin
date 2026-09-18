@@ -2,6 +2,8 @@
 
 - **Domain:** `<domain>` (folder in `openspec/specs/`)
 - **Reference Ticket / Issue:** <id, URL or "n/a">
+- **Depth:** <prototype | alpha | beta | ga> (default `alpha` — see `commands/change.md#workflow-depth`)
+- **Scope:** <linked docs/scope/<slug>.md, or "n/a">
 
 ## Why
 <The business reason or technical problem that motivates this change. What happens if we do nothing?>

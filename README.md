@@ -17,16 +17,17 @@
 5. [Quick Start in 3 Steps](#-quick-start-in-3-steps)
 6. [Command Reference & Real Execution](#-command-reference--real-execution)
    - [`/ssd-init` — Bootstrap Project](#1-ssd-init--bootstrap-project)
-   - [`/change` — Spec Lifecycle (OpenSpec)](#2-change--spec-lifecycle-openspec)
-   - [`/refine` — Requirements to Tickets Pipeline](#3-refine--requirements-to-tickets-pipeline)
-   - [`/ticket-translator` — Rapid Technical Triage](#4-ticket-translator--rapid-technical-triage)
-   - [`/debug` — Root Cause Before Fix](#5-debug--root-cause-before-fix)
-   - [`/feature` — Strict TDD Implementation](#6-feature--strict-tdd-implementation)
-   - [`/commit` — Structured Conventional Commits](#7-commit--structured-conventional-commits)
-   - [`/document` — PRs, Changelogs, Release Notes, Postmortems](#8-document--prs-changelogs-release-notes-postmortems)
-   - [`/audit` — Nested Context for Monorepos](#9-audit--nested-context-for-monorepos)
-   - [`/compress`, `/preserve`, `/resume` — Session Management](#10-compress-preserve-resume--session-management)
-   - [`/meta-prompt` — Prompt Engineering](#11-meta-prompt--prompt-engineering)
+   - [`/scope` — Living Scope Document](#2-scope--living-scope-document)
+   - [`/change` — Spec Lifecycle (OpenSpec)](#3-change--spec-lifecycle-openspec)
+   - [`/refine` — Requirements to Tickets Pipeline](#4-refine--requirements-to-tickets-pipeline)
+   - [`/ticket-translator` — Rapid Technical Triage](#5-ticket-translator--rapid-technical-triage)
+   - [`/debug` — Root Cause Before Fix](#6-debug--root-cause-before-fix)
+   - [`/feature` — Strict TDD Implementation](#7-feature--strict-tdd-implementation)
+   - [`/commit` — Structured Conventional Commits](#8-commit--structured-conventional-commits)
+   - [`/document` — PRs, Changelogs, Release Notes, Postmortems](#9-document--prs-changelogs-release-notes-postmortems)
+   - [`/audit` — Nested Context for Monorepos](#10-audit--nested-context-for-monorepos)
+   - [`/compress`, `/preserve`, `/resume` — Session Management](#11-compress-preserve-resume--session-management)
+   - [`/meta-prompt` — Prompt Engineering](#12-meta-prompt--prompt-engineering)
 7. [End-to-End Workflow Walkthrough](#-end-to-end-workflow-walkthrough)
 8. [Specialized Subagents Catalog](#-specialized-subagents-catalog)
 9. [Skills & Runbooks](#-skills--runbooks)
@@ -63,10 +64,10 @@ Most AI coding assistants suffer from:
 
 ```text
 workflow-ssd-plugin/
-├── commands/       # 13 Slash Commands for terminal orchestration
+├── commands/       # 14 Slash Commands for terminal orchestration
 ├── agents/         # 13 Autonomous Subagents + 7-Stage Product Pipeline
 ├── skills/         # 6 Domain runbooks (TDD, Debugging, Architecture, Database, Code Exploration)
-└── templates/      # OpenSpec + context templates (proposal, design, tasks, delta, living specs, AGENTS.md)
+└── templates/      # OpenSpec + context templates (proposal, design, tasks, delta, living specs, scope, AGENTS.md)
 ```
 
 ---
@@ -103,7 +104,7 @@ Open Claude Code inside any repository and run:
 ```text
 /ssd-init
 ```
-This automatically sets up `CLAUDE.md`, creates the `openspec/` directories, and prepares `docs/stories/` and `docs/tickets/`.
+This automatically sets up `CLAUDE.md`, creates the `openspec/` directories, and prepares `docs/stories/`, `docs/tickets/`, and `docs/scope/`.
 
 ### Step 2: Configure your stack in `CLAUDE.md`
 Review the generated `CLAUDE.md` and verify your testing and linting commands:
@@ -138,21 +139,45 @@ Initializes the project with all necessary directories, configurations, and temp
 
 ---
 
-### 2. `/change` — Spec Lifecycle (OpenSpec)
+### 2. `/scope` — Living Scope Document
+
+Turns a raw product idea into a **living, coarse scope document** in `docs/scope/` that persists and evolves across the whole initiative — not a one-off proposal that closes when archived.
+
+```text
+/scope new "Self-serve billing portal"
+```
+
+| Subcommand | Syntax | Description |
+|---|---|---|
+| **new** | `/scope new <idea>` | Creates `docs/scope/<slug>.md`: the idea, a coarse Build Order (2-6 phases), and what's explicitly out of scope. |
+| **update** | `/scope update <slug>` | Advances a phase's status, links it to a `/change`, or revises the idea. Called automatically by `/change propose|ff --scope <slug>` and `/change archive`. |
+| **list** | `/scope list` | Lists every scope document with its status. |
+
+Link a phase to real work with `--scope`:
+```text
+/change propose billing-portal-stripe-connect --scope self-serve-billing-portal
+```
+
+---
+
+### 3. `/change` — Spec Lifecycle (OpenSpec)
 
 Orchestrates the lifecycle of a change proposal through specialized subagents.
 
 | Subcommand | Syntax | Description |
 |---|---|---|
 | **explore** | `/change explore <idea>` | Researches the codebase *without* creating files. Answers: Does it exist? What files are affected? What are the risks? |
-| **propose** | `/change propose <name>` | Drafts `proposal.md`, `design.md`, delta specs, `stories.md`, and `tasks.md` with human approval gate. |
-| **ff** | `/change ff <name>` | **Fast-Forward:** For clear, small fixes or straightforward additions in a single pass. |
+| **propose** | `/change propose <name> [--depth <level>] [--scope <slug>]` | Drafts `proposal.md`, `design.md`, delta specs, `stories.md`, and `tasks.md` with human approval gate. |
+| **ff** | `/change ff <name> [--depth <level>] [--scope <slug>]` | **Fast-Forward:** For clear, small fixes or straightforward additions in a single pass. |
 | **analyze** | `/change analyze <name>` | Audits the change package for missing edge cases, security, and testability before coding. |
 | **apply** | `/change apply <name>` | Executes atomic tasks sequentially using strict TDD (`/feature`). |
-| **verify** | `/change verify <name>` | Runs full test suites, linters, and verifies acceptance criteria. |
-| **sync** | `/change sync <name>` | Merges spec delta into living domain specs in `openspec/specs/<domain>/`. |
-| **archive** | `/change archive <name>` | Moves completed change to `openspec/archive/YYYY-MM-<name>/`. |
+| **verify** | `/change verify <name>` | Runs full test suites, linters, and verifies acceptance criteria against a **running app** (`runtime-verifier`). |
+| **review** | `/change review <name>` | **Independent second pair of eyes:** `code-reviewer` audits the diff cold — no access to the implementer's own reasoning. Required at `Depth: ga`. |
+| **sync** | `/change sync <name>` | Merges spec delta into living domain specs in `openspec/specs/<domain>/`; advances the linked `/scope` phase. |
+| **archive** | `/change archive <name>` | Moves completed change to `openspec/archive/YYYY-MM-<name>/`; blocked until the gates its `Depth` requires are satisfied. |
 | **list** | `/change list` | Lists all active and archived changes with current status. |
+
+**Workflow Depth:** `propose`/`ff` accept `--depth prototype|alpha|beta|ga` (default `alpha`). It decides what `archive` requires: `prototype` needs only `apply`; `alpha` (today's default) adds `verify`; `beta` adds a coverage read; `ga` adds a required `review` **APPROVED** verdict plus a `/document` draft. See `commands/change.md#workflow-depth` for the full table.
 
 **Unified index:** `propose` and `ff` register `<name>` in `docs/stories/README.md` and `docs/tickets/README.md` (status `proposed`), pointing at the change package; `archive` updates that row's status to `done` and rewrites its path to the new `openspec/archive/` location. This keeps a single browsable index regardless of whether a story/ticket came from `/change` or from `/refine --deep`.
 
@@ -161,21 +186,22 @@ Orchestrates the lifecycle of a change proposal through specialized subagents.
 # 1. Investigate feasibility
 /change explore "Add webhook retry mechanism"
 
-# 2. Propose the specification package
-/change propose webhook-retries
+# 2. Propose the specification package (GA rigor: review + document required to archive)
+/change propose webhook-retries --depth ga
 
 # 3. Implement tasks
 /change apply webhook-retries
 
-# 4. Verify and sync living specs
+# 4. Verify, review, and sync living specs
 /change verify webhook-retries
+/change review webhook-retries
 /change sync webhook-retries
 /change archive webhook-retries
 ```
 
 ---
 
-### 3. `/refine` — Requirements to Tickets Pipeline
+### 4. `/refine` — Requirements to Tickets Pipeline
 
 Turns raw business requests or specifications into structured tickets and OpenSpec changes. Offers two speeds:
 
@@ -208,7 +234,7 @@ Activated with `--deep` or for complex workflows, new sub-systems, or large `.do
 
 ---
 
-### 4. `/ticket-translator` — Rapid Technical Triage
+### 5. `/ticket-translator` — Rapid Technical Triage
 
 Performs rapid diagnosis on incoming bug reports or feature tickets without starting a full refinement cycle.
 
@@ -228,7 +254,7 @@ Performs rapid diagnosis on incoming bug reports or feature tickets without star
 
 ---
 
-### 5. `/debug` — Root Cause Before Fix
+### 6. `/debug` — Root Cause Before Fix
 
 Investigates a bug through evidence before writing any fix — distinct from `/ticket-translator`, which triages and specs a ticket without root-causing it.
 
@@ -247,7 +273,7 @@ Investigates a bug through evidence before writing any fix — distinct from `/t
 
 ---
 
-### 6. `/feature` — Strict TDD Implementation
+### 7. `/feature` — Strict TDD Implementation
 
 Implements a single technical ticket from `docs/tickets/` following the strict TDD cycle:
 
@@ -285,7 +311,7 @@ Implements a single technical ticket from `docs/tickets/` following the strict T
 
 ---
 
-### 7. `/commit` — Structured Conventional Commits
+### 8. `/commit` — Structured Conventional Commits
 
 Inspects your working tree diff and active tickets to draft a standard Conventional Commit message.
 
@@ -301,7 +327,7 @@ Inspects your working tree diff and active tickets to draft a standard Conventio
 
 ---
 
-### 8. `/document` — PRs, Changelogs, Release Notes, Postmortems
+### 9. `/document` — PRs, Changelogs, Release Notes, Postmortems
 
 Drafts human-facing documentation grounded strictly in real `git log`/`git diff` output — never invented content.
 
@@ -316,7 +342,7 @@ Drafts human-facing documentation grounded strictly in real `git log`/`git diff`
 
 ---
 
-### 9. `/audit` — Nested Context for Monorepos
+### 10. `/audit` — Nested Context for Monorepos
 
 Generates or gap-fills nested `AGENTS.md` files for distinct areas (`apps/`, `packages/`, `services/`) — complementing the root `CLAUDE.md`, not replacing it.
 
@@ -329,7 +355,7 @@ Skips entirely on a single cohesive app — `CLAUDE.md` alone is enough there. N
 
 ---
 
-### 10. `/compress`, `/preserve`, `/resume` — Session Management
+### 11. `/compress`, `/preserve`, `/resume` — Session Management
 
 Manage long conversations and context windows cleanly:
 
@@ -344,7 +370,7 @@ Manage long conversations and context windows cleanly:
 
 ---
 
-### 11. `/meta-prompt` — Prompt Engineering
+### 12. `/meta-prompt` — Prompt Engineering
 
 Refines ambiguous prompts using role, context, constraints, and observable verification outcomes:
 
@@ -360,7 +386,8 @@ Here is how a real feature goes from an idea to production:
 
 ```mermaid
 flowchart TD
-    A["💡 Raw Idea / Ticket"] --> B["/change explore & propose"]
+    S["🗺️ /scope new (living scope doc)"] --> A["💡 Raw Idea / Ticket"]
+    A --> B["/change explore & propose --scope <slug>"]
     B --> C["Specs & SBE Examples (proposal.md, spec.md)"]
     C --> D["Human Approval Gate ⛔"]
     D --> E["Tasks generated in tasks.md"]
@@ -368,10 +395,11 @@ flowchart TD
     F --> G["🔴 Test Writer → 🟢 Implementer → 🔵 Refactorer"]
     G --> H["Automated Tests & Linters Pass ✅"]
     H --> H2["/change verify (spec-reviewer ∥ dba-optimizer ∥ runtime-verifier)"]
-    H2 --> I["/commit"]
+    H2 --> H3["/change review (code-reviewer — fresh eyes, required at Depth: ga)"]
+    H3 --> I["/commit"]
     I --> I2["/document pr"]
     I2 --> J["/change sync & archive"]
-    J --> K["🎉 Living Specs Updated"]
+    J --> K["🎉 Living Specs + Scope Doc Updated"]
 
     L["🐛 Bug Report"] --> M["/debug: reproduce → localize → hypothesize → test"]
     M --> N["🔴 Regression Test → 🟢 Minimal Fix"]
@@ -388,12 +416,13 @@ flowchart TD
 | `functional-analyst` | Distills business rules, SBE tables, and edge cases. | Read-only |
 | `spec-reviewer` | Audits specifications against SBE quality standards. | Read-only |
 | `tdd-test-writer` | **RED:** Writes failing unit and integration tests. | Read, Write tests, Bash (tests) |
-| `tdd-implementer` | **GREEN:** Writes minimum production code to pass tests. | Read, Write source, Bash (tests) |
+| `tdd-implementer` | **GREEN:** Writes minimum production code to pass tests. Stops and escalates to `/change propose` if a library/provider/data-model choice has no named source in `design.md` or the codebase. | Read, Write source, Bash (tests) |
 | `tdd-refactorer` | **REFACTOR:** Improves code structure while keeping tests green. | Read, Write source, Bash (tests) |
-| `fullstack-developer` | Implements small bugfixes and fast-forward changes (`ff`). | Read, Write, Bash |
+| `fullstack-developer` | Implements small bugfixes and fast-forward changes (`ff`). Same decision-owed gate as the TDD Implementer — never invents an unmade library/provider/data-model choice. | Read, Write, Bash |
 | `dba-optimizer` | Audits SQL queries, indexing, and migration safety. | Read-only |
 | `bug-investigator` | Reproduces, localizes, and proves a bug's root cause before any fix (`/debug`). | Read, Grep, Glob, Bash |
 | `runtime-verifier` | Proves delta-spec SBE examples by running the real app/CLI/API (`/change verify`). | Read, Grep, Glob, Bash |
+| `code-reviewer` | Independent, fresh-eyes review of the diff for correctness, security, and consistency — no access to the implementer's reasoning (`/change review`). | Read, Grep, Glob, Bash |
 | `doc-writer` | Drafts PR descriptions, changelogs, release notes, and postmortems from real git history (`/document`). | Read, Grep, Glob, Bash |
 | `commit-message-writer` | Formats conventional commit messages linked to tickets. | Read-only |
 | `product-agent/` (00–06) | 7-stage formal pipeline (Requirements → Use Cases → Diagrams → Stories → Tickets). | Scoped per stage |
@@ -430,10 +459,12 @@ workflow-ssd-plugin/
 │   ├── preserve.md
 │   ├── refine.md
 │   ├── resume.md
+│   ├── scope.md
 │   ├── ssd-init.md
 │   └── ticket-translator.md
 ├── agents/                            # Specialized subagent definitions
 │   ├── bug-investigator.md
+│   ├── code-reviewer.md
 │   ├── commit-message-writer.md
 │   ├── dba-optimizer.md
 │   ├── doc-writer.md
@@ -464,6 +495,8 @@ workflow-ssd-plugin/
     ├── AGENTS.md.template
     ├── CLAUDE.md.template
     ├── docs/
+    │   ├── scope-index.md.template
+    │   ├── scope.md.template
     │   ├── stories-index.md.template
     │   └── tickets-index.md.template
     └── openspec/

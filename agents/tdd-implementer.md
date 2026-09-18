@@ -38,6 +38,17 @@ A failing test is communicating a requirement. Editing a test so that it passes 
 {{TEST_COMMAND}}
 ```
 
+---
+
+## 🚦 Decision-Owed Gate — Before Writing Any Code
+
+For every value, provider, library, or data-model shape the failing test requires, it must have a **named source**: either `design.md` states it explicitly, or an existing analogous file in the codebase already does it that way (skill `architecture-first`).
+
+- **Named source found** → proceed to implementation.
+- **No named source** — you would have to invent which library, which provider, what shape the data takes, or a behavior the spec left open → **STOP. Do not guess.** Report it as a blocker citing the missing decision, and route it back to `/change propose` (or flag it in `/change analyze` if the change is still in that stage) instead of picking one yourself.
+
+This is a mechanical check, not a judgment call: the moment you'd be deciding *which* dependency or *what shape*, that decision was owed to the spec — even if the code to write it looks like one line.
+
 ### How to Verify You Did Not Touch Tests
 
 Before delivering, run:

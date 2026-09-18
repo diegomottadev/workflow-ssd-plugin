@@ -10,7 +10,8 @@
 | Command | File | Purpose |
 |---|---|---|
 | `/ssd-init` | [`ssd-init.md`](ssd-init.md) | Bootstraps OpenSpec folders, starter templates, and `CLAUDE.md` in any project. |
-| `/change` | [`change.md`](change.md) | Full Spec-Driven lifecycle: `explore`, `propose`, `ff`, `analyze`, `apply`, `verify`, `sync`, `archive`, `list`. |
+| `/scope` | [`scope.md`](scope.md) | Living, coarse scope document per initiative (`docs/scope/`) that evolves as `/change` phases start and finish. |
+| `/change` | [`change.md`](change.md) | Full Spec-Driven lifecycle: `explore`, `propose`, `ff`, `analyze`, `apply`, `verify`, `review`, `sync`, `archive`, `list`. |
 | `/feature` | [`feature.md`](feature.md) | Implements a technical ticket from `docs/tickets/` using strict TDD (🔴 Red → 🟢 Green → 🔵 Refactor). |
 | `/refine` | [`refine.md`](refine.md) | Refines user requests and requirements into Given-When-Then stories, example tables, and tickets. |
 | `/ticket-translator` | [`ticket-translator.md`](ticket-translator.md) | Performs rapid technical triage on bug reports or support issues, mapping them to codebase components. |
