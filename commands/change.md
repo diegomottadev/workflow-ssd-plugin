@@ -40,7 +40,8 @@ Optional but recommended when an idea is vague or when checking if a feature alr
    - `functional-analyst` → enriches `design.md` + delta specs (Given-When-Then + SBE example tables)
    - **User Stories** → `stories.md` with INVEST evaluation and Given-When-Then criteria
    - `spec-reviewer` → audits the spec against Gojko Adzic's SBE quality dimensions; loops until APPROVED (max 3 cycles)
-3. ⛔ **GATE:** Present `proposal.md`, delta specs, `design.md`, `stories.md`, and `tasks.md` to the user and **wait for explicit approval** before `apply`.
+3. **Register in the unified index** (see `docs/stories/README.md` and `docs/tickets/README.md`): append one row per file, pointing at `openspec/changes/<name>/stories.md` and `openspec/changes/<name>/tasks.md`, with `Status: proposed` and `Track: change propose`. Do not copy content — the index only links to it.
+4. ⛔ **GATE:** Present `proposal.md`, delta specs, `design.md`, `stories.md`, and `tasks.md` to the user and **wait for explicit approval** before `apply`.
 
 #### Quality Checklist for the Gate:
 - [ ] Proposal intent matches what was requested
@@ -65,6 +66,8 @@ Creates `proposal.md`, `design.md`, delta specs, `stories.md`, and `tasks.md` **
 - Delta spec: Single requirement with compact SBE table (2-3 rows).
 - `design.md`: Exact `file:line` touched and code snippet.
 - `tasks.md`: Short list of 3 tasks (🔴 failing test, 🟢 minimal code, 🟣 mutation check).
+
+Register in the unified index exactly as in `propose` (Step 3 above), with `Track: change ff`.
 
 ---
 
@@ -106,7 +109,9 @@ Check off tasks in `tasks.md` as they are completed.
 
 - ⛔ **Precondition: All tasks under Apply in `tasks.md` must be checked.**
 - Run project linter (`{{LINT_COMMAND}}`) and clear cache if needed.
-- Dispatch in parallel: `spec-reviewer` ∥ `dba-optimizer`.
+- Dispatch in parallel: `spec-reviewer` ∥ `dba-optimizer` ∥ `runtime-verifier`.
+  - `runtime-verifier` proves the delta spec's SBE examples hold true by actually running the app/CLI/API — not just reading test output. If an example can't be runtime-exercised, it reports **SKIPPED** with a reason rather than assuming PASS.
+  - If `runtime-verifier` reports a FAIL, route it to `/debug` for root-cause investigation before re-running `verify` — do not patch it ad hoc inside this step.
 - Run the full test suite (`{{TEST_COMMAND}}`).
 - **Living Documentation & Completeness:** Match test output against delta spec requirements. 100% of requirements must have passing tests.
 
@@ -125,9 +130,11 @@ Check off tasks in `tasks.md` as they are completed.
 - ⛔ **Precondition: Delta spec must be synchronized (`sync`).**
 - Dispatch `commit-message-writer` to prepare a Conventional Commit message (do not commit automatically).
 - Move `openspec/changes/<name>/` to `openspec/archive/YYYY-MM-DD-<name>/` and set `Status: done` in `proposal.md`.
+- **Update the unified index:** find `<name>`'s rows in `docs/stories/README.md` and `docs/tickets/README.md` (added during `propose`/`ff`), set `Status: done`, and rewrite their `Path` to the new `openspec/archive/YYYY-MM-DD-<name>/` location so the links don't rot.
 
 ---
 
 ### `list` — List Changes
 
 - Lists all directories in `openspec/changes/` with status, and recent entries in `openspec/archive/`.
+- Cross-check against `docs/stories/README.md` and `docs/tickets/README.md`: flag any change on disk with no matching index row (registration was skipped) and any index row whose `Path` no longer exists on disk (stale after a manual move).

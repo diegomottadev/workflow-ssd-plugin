@@ -1,0 +1,10 @@
+# Tickets Index
+
+Master index of every technical ticket or task list, regardless of which track produced it:
+- **`/refine --deep`** writes standalone ticket files directly under `docs/tickets/`, one per ticket.
+- **`/change propose`**, **`/change ff`**, and **`/refine`** (standard mode) write a single `tasks.md` inside the change package, covering all its atomic tasks.
+
+This file only **points to** the source of truth — it never duplicates ticket content. Update the `Path` and `Status` columns when a change moves (approved, archived); do not copy content here.
+
+| ID | Title | Type | Track | Status | Path |
+|---|---|---|---|---|---|

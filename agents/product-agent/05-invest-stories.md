@@ -12,7 +12,8 @@ tools:
 # Stage 5 — INVEST User Stories & SBE Generator
 
 ## Output
-Write user stories to `docs/stories/<ID>-<slug>.md`.
+1. Write user stories to `docs/stories/<ID>-<slug>.md`.
+2. Register each story in the unified index `docs/stories/README.md` (create it from `templates/docs/stories-index.md.template` if missing): append one row per story — `ID` = story ID (e.g. `US-01`), `Track` = `refine --deep`, `Status` = `proposed`, `Path` = `docs/stories/<ID>-<slug>.md`. **Append, never overwrite** — rows from `/change propose|ff` may already be present.
 
 ---
 

@@ -44,10 +44,19 @@ openspec/
 - Copy the template files from the plugin's `templates/openspec/` into the project's `openspec/templates/`.
 - If `openspec/project.md` does not exist, generate it from `templates/openspec/project.md.template` and prompt the user to list their initial domain names.
 
-### 3. Create Requirements and Ticket Folders
+### 3. Create Requirements and Ticket Folders, With a Unified Index
 Create the following directories:
 - `docs/stories/` (for INVEST user stories)
 - `docs/tickets/` (for technical tickets ready for implementation)
+
+Seed each with a master index file, if it does not already exist:
+- `docs/stories/README.md` ← from `templates/docs/stories-index.md.template`
+- `docs/tickets/README.md` ← from `templates/docs/tickets-index.md.template`
+
+🔑 **Why this matters:** `/change propose|ff` and standard-mode `/refine` write `stories.md`/`tasks.md` **inside** `openspec/changes/<name>/`, not under `docs/`. Only `/refine --deep` writes standalone files directly into `docs/stories/`/`docs/tickets/`. Without these index files, anything produced by the fast track is invisible from `docs/`. `/change propose|ff` and the deep pipeline (stages 5–6) both register a row here — see `commands/change.md` and `agents/product-agent/05-invest-stories.md` / `06-ticket-generator.md`.
+
+### 4. Suggest `/audit` for Monorepos (Conditional)
+If the project shows multi-area signals (a monorepo tool config — `turbo.json`, `pnpm-workspace.yaml`, `lerna.json`, `nx.json` — or multiple manifests under `apps/`, `packages/`, `services/`), tell the user they can run `/audit` afterward to generate nested `AGENTS.md` files per area. Do not run it automatically — `CLAUDE.md` alone is enough for a single cohesive app.
 
 ---
 
@@ -60,4 +69,7 @@ Upon completion, present a summary report containing:
    - `/change explore <idea>`: To research an idea without creating files.
    - `/change propose <idea>`: To draft a change proposal and spec delta.
    - `/feature <ticket>`: To implement a ticket using strict TDD (🔴 Red → 🟢 Green → 🔵 Refactor).
+   - `/debug <bug description>`: To root-cause a bug before fixing it.
    - `/commit`: To generate a structured Conventional Commit message.
+   - `/document pr`: To draft a PR description, changelog entry, release note, or postmortem.
+   - `/audit`: (monorepos only) To generate nested `AGENTS.md` context files per area.

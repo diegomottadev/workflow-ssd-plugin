@@ -1,0 +1,10 @@
+# Stories Index
+
+Master index of every user story, regardless of which track produced it:
+- **`/refine --deep`** (formal 7-stage pipeline) writes standalone story files directly under `docs/stories/`.
+- **`/change propose`**, **`/change ff`**, and **`/refine`** (standard mode) write `stories.md` inside the change package.
+
+This file only **points to** the source of truth — it never duplicates story content. Update the `Path` and `Status` columns when a change moves (approved, archived); do not copy content here.
+
+| ID | Title | Track | Status | Path |
+|---|---|---|---|---|

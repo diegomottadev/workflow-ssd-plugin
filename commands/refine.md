@@ -39,11 +39,12 @@ If `--deep` is not specified and the requirement has a clear, focused scope:
    - Identify Red Cards (open questions and ambiguities).
 3. **⛔ Approval GATE:** Present the result to the user.
 4. **OpenSpec Generation:** Once approved, directly create `openspec/changes/<ID>-<slug>/` with:
-   - `proposal.md`: Why, what changes, and new capabilities.
+   - `proposal.md`: Why, what changes, and new capabilities (includes the INVEST story from Step 2).
    - `specs/<domain>/spec.md`: Specification delta with the SBE table.
    - `tasks.md`: Atomic TDD task list.
    - `design.md`: Architecture and design decisions.
-5. Ready for `/feature` or `/change apply` to begin TDD implementation.
+5. **Register in the unified index**, exactly as `/change propose` does: append a row to `docs/tickets/README.md` for `tasks.md` (`Track: refine`, `Status: proposed`), and to `docs/stories/README.md` — pointing at `stories.md` if the package includes one, otherwise at `proposal.md`'s story section.
+6. Ready for `/feature` or `/change apply` to begin TDD implementation.
 
 ---
 

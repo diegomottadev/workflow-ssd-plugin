@@ -17,6 +17,9 @@
 | **TDD Refactorer** | [`tdd-refactorer.md`](tdd-refactorer.md) | 🔵 REFACTOR Phase: Cleans up and removes duplication while keeping tests green. | Read, Write, Edit, Grep, Glob, Bash |
 | **Fullstack Developer** | [`fullstack-developer.md`](fullstack-developer.md) | Direct implementer for small fixes or fast-forward tracks (`/change ff`). | Read, Write, Edit, Grep, Glob, Bash |
 | **DBA & Optimizer** | [`dba-optimizer.md`](dba-optimizer.md) | Audits queries, schema design, indexes, and migrations to ensure database health. | Read, Grep, Glob |
+| **Bug Investigator** | [`bug-investigator.md`](bug-investigator.md) | Reproduces, localizes, and proves a bug's root cause with evidence before any fix is written (`/debug`). | Read, Grep, Glob, Bash |
+| **Runtime Verifier** | [`runtime-verifier.md`](runtime-verifier.md) | Proves delta-spec SBE examples hold true by running the real app/CLI/API, not just reading test output (`/change verify`). | Read, Grep, Glob, Bash |
+| **Doc Writer** | [`doc-writer.md`](doc-writer.md) | Drafts PR descriptions, changelogs, release notes, and postmortems from real git history (`/document`). | Read, Grep, Glob, Bash |
 | **Commit Message Writer** | [`commit-message-writer.md`](commit-message-writer.md) | Drafts clear Conventional Commit messages traceable to tickets and changes. | Read, Grep, Glob |
 | **Product Pipeline** | [`product-agent/`](product-agent/) | 7-agent pipeline turning raw user requests into actionable technical tickets. | Read, Grep, Glob |
 

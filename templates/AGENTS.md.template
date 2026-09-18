@@ -1,0 +1,35 @@
+# {{AREA_NAME}} — Area Context
+
+> Nested context file. Root project rules live in [`CLAUDE.md`](/CLAUDE.md) and `openspec/project.md`. This file documents only what differs or matters specifically inside `{{AREA_PATH}}`.
+
+---
+
+## Scope
+
+Files under `{{AREA_PATH}}` — {{AREA_SHORT_DESCRIPTION}}.
+
+## Stack & Conventions Specific to This Area
+
+| Aspect | Detail |
+|---|---|
+| Language / Framework | {{AREA_STACK}} |
+| Entry points | {{AREA_ENTRY_POINTS}} |
+| Testing | {{AREA_TEST_COMMAND}} |
+
+- {{AREA_CONVENTION_1}}
+- {{AREA_CONVENTION_2}}
+
+## Gotchas
+
+- {{AREA_GOTCHA_1}}
+
+## Key Files
+
+| File | Role |
+|---|---|
+| `{{AREA_KEY_FILE_1}}` | {{AREA_KEY_FILE_1_ROLE}} |
+
+## Related Context
+
+- Root: [`CLAUDE.md`](/CLAUDE.md)
+- Sibling areas: {{SIBLING_AGENTS_MD_LINKS}}

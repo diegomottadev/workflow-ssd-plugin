@@ -20,10 +20,13 @@
    - [`/change` — Spec Lifecycle (OpenSpec)](#2-change--spec-lifecycle-openspec)
    - [`/refine` — Requirements to Tickets Pipeline](#3-refine--requirements-to-tickets-pipeline)
    - [`/ticket-translator` — Rapid Technical Triage](#4-ticket-translator--rapid-technical-triage)
-   - [`/feature` — Strict TDD Implementation](#5-feature--strict-tdd-implementation)
-   - [`/commit` — Structured Conventional Commits](#6-commit--structured-conventional-commits)
-   - [`/compress`, `/preserve`, `/resume` — Session Management](#7-compress-preserve-resume--session-management)
-   - [`/meta-prompt` — Prompt Engineering](#8-meta-prompt--prompt-engineering)
+   - [`/debug` — Root Cause Before Fix](#5-debug--root-cause-before-fix)
+   - [`/feature` — Strict TDD Implementation](#6-feature--strict-tdd-implementation)
+   - [`/commit` — Structured Conventional Commits](#7-commit--structured-conventional-commits)
+   - [`/document` — PRs, Changelogs, Release Notes, Postmortems](#8-document--prs-changelogs-release-notes-postmortems)
+   - [`/audit` — Nested Context for Monorepos](#9-audit--nested-context-for-monorepos)
+   - [`/compress`, `/preserve`, `/resume` — Session Management](#10-compress-preserve-resume--session-management)
+   - [`/meta-prompt` — Prompt Engineering](#11-meta-prompt--prompt-engineering)
 7. [End-to-End Workflow Walkthrough](#-end-to-end-workflow-walkthrough)
 8. [Specialized Subagents Catalog](#-specialized-subagents-catalog)
 9. [Skills & Runbooks](#-skills--runbooks)
@@ -60,10 +63,10 @@ Most AI coding assistants suffer from:
 
 ```text
 workflow-ssd-plugin/
-├── commands/       # 10 Slash Commands for terminal orchestration
-├── agents/         # 10 Autonomous Subagents + 7-Stage Product Pipeline
-├── skills/         # 5 Domain runbooks (TDD, Architecture, Database, Code Exploration)
-└── templates/      # OpenSpec templates (proposal, design, tasks, delta, living specs)
+├── commands/       # 13 Slash Commands for terminal orchestration
+├── agents/         # 13 Autonomous Subagents + 7-Stage Product Pipeline
+├── skills/         # 6 Domain runbooks (TDD, Debugging, Architecture, Database, Code Exploration)
+└── templates/      # OpenSpec + context templates (proposal, design, tasks, delta, living specs, AGENTS.md)
 ```
 
 ---
@@ -130,8 +133,8 @@ Initializes the project with all necessary directories, configurations, and temp
 **What it creates on disk:**
 - `CLAUDE.md`: Main project instructions file (with auto-detected stack, test, and lint commands).
 - `openspec/`: Living domain specifications, templates, active changes, and archive.
-- `docs/stories/`: Destination for INVEST user stories.
-- `docs/tickets/`: Destination for technical implementation tickets.
+- `docs/stories/README.md`: Unified index of every story, whether it lives in a standalone file here (`/refine --deep`) or inside `openspec/changes/<name>/stories.md` (`/change propose|ff`).
+- `docs/tickets/README.md`: Same idea for tickets/tasks — indexes standalone ticket files here and `openspec/changes/<name>/tasks.md` alike.
 
 ---
 
@@ -150,6 +153,8 @@ Orchestrates the lifecycle of a change proposal through specialized subagents.
 | **sync** | `/change sync <name>` | Merges spec delta into living domain specs in `openspec/specs/<domain>/`. |
 | **archive** | `/change archive <name>` | Moves completed change to `openspec/archive/YYYY-MM-<name>/`. |
 | **list** | `/change list` | Lists all active and archived changes with current status. |
+
+**Unified index:** `propose` and `ff` register `<name>` in `docs/stories/README.md` and `docs/tickets/README.md` (status `proposed`), pointing at the change package; `archive` updates that row's status to `done` and rewrites its path to the new `openspec/archive/` location. This keeps a single browsable index regardless of whether a story/ticket came from `/change` or from `/refine --deep`.
 
 **Example Execution:**
 ```text
@@ -223,7 +228,26 @@ Performs rapid diagnosis on incoming bug reports or feature tickets without star
 
 ---
 
-### 5. `/feature` — Strict TDD Implementation
+### 5. `/debug` — Root Cause Before Fix
+
+Investigates a bug through evidence before writing any fix — distinct from `/ticket-translator`, which triages and specs a ticket without root-causing it.
+
+```text
+/debug "Error 500 when exporting CSV with more than 10k rows"
+```
+
+**The Loop:**
+```text
+🔍 REPRODUCE ─► 🔬 LOCALIZE ─► 💡 HYPOTHESIZE ─► 🧪 TEST ─► ⛔ GATE ─► 🔴 RED ─► 🟢 GREEN ─► ✅ VERIFY
+```
+
+- `bug-investigator` runs the read-only investigation and reports root cause + evidence + blast radius.
+- The user reviews the report at the gate before any code changes.
+- `tdd-test-writer` writes the regression test (🔴), `tdd-implementer` writes the minimal fix (🟢).
+
+---
+
+### 6. `/feature` — Strict TDD Implementation
 
 Implements a single technical ticket from `docs/tickets/` following the strict TDD cycle:
 
@@ -261,7 +285,7 @@ Implements a single technical ticket from `docs/tickets/` following the strict T
 
 ---
 
-### 6. `/commit` — Structured Conventional Commits
+### 7. `/commit` — Structured Conventional Commits
 
 Inspects your working tree diff and active tickets to draft a standard Conventional Commit message.
 
@@ -277,7 +301,35 @@ Inspects your working tree diff and active tickets to draft a standard Conventio
 
 ---
 
-### 7. `/compress`, `/preserve`, `/resume` — Session Management
+### 8. `/document` — PRs, Changelogs, Release Notes, Postmortems
+
+Drafts human-facing documentation grounded strictly in real `git log`/`git diff` output — never invented content.
+
+```text
+/document pr
+/document changelog
+/document release-note v1.2.0
+/document postmortem "checkout outage 2026-09-15"
+```
+
+**Safety Note:** Drafts are shown in chat first. `gh pr create`/`gh pr edit` and any other outward-facing action only run after explicit confirmation.
+
+---
+
+### 9. `/audit` — Nested Context for Monorepos
+
+Generates or gap-fills nested `AGENTS.md` files for distinct areas (`apps/`, `packages/`, `services/`) — complementing the root `CLAUDE.md`, not replacing it.
+
+```text
+/audit
+/audit apps/api
+```
+
+Skips entirely on a single cohesive app — `CLAUDE.md` alone is enough there. Never overwrites curated content without asking.
+
+---
+
+### 10. `/compress`, `/preserve`, `/resume` — Session Management
 
 Manage long conversations and context windows cleanly:
 
@@ -292,7 +344,7 @@ Manage long conversations and context windows cleanly:
 
 ---
 
-### 8. `/meta-prompt` — Prompt Engineering
+### 11. `/meta-prompt` — Prompt Engineering
 
 Refines ambiguous prompts using role, context, constraints, and observable verification outcomes:
 
@@ -315,9 +367,15 @@ flowchart TD
     E --> F["/feature docs/tickets/TASK-01.md"]
     F --> G["🔴 Test Writer → 🟢 Implementer → 🔵 Refactorer"]
     G --> H["Automated Tests & Linters Pass ✅"]
-    H --> I["/commit"]
-    I --> J["/change sync & archive"]
+    H --> H2["/change verify (spec-reviewer ∥ dba-optimizer ∥ runtime-verifier)"]
+    H2 --> I["/commit"]
+    I --> I2["/document pr"]
+    I2 --> J["/change sync & archive"]
     J --> K["🎉 Living Specs Updated"]
+
+    L["🐛 Bug Report"] --> M["/debug: reproduce → localize → hypothesize → test"]
+    M --> N["🔴 Regression Test → 🟢 Minimal Fix"]
+    N --> I
 ```
 
 ---
@@ -334,6 +392,9 @@ flowchart TD
 | `tdd-refactorer` | **REFACTOR:** Improves code structure while keeping tests green. | Read, Write source, Bash (tests) |
 | `fullstack-developer` | Implements small bugfixes and fast-forward changes (`ff`). | Read, Write, Bash |
 | `dba-optimizer` | Audits SQL queries, indexing, and migration safety. | Read-only |
+| `bug-investigator` | Reproduces, localizes, and proves a bug's root cause before any fix (`/debug`). | Read, Grep, Glob, Bash |
+| `runtime-verifier` | Proves delta-spec SBE examples by running the real app/CLI/API (`/change verify`). | Read, Grep, Glob, Bash |
+| `doc-writer` | Drafts PR descriptions, changelogs, release notes, and postmortems from real git history (`/document`). | Read, Grep, Glob, Bash |
 | `commit-message-writer` | Formats conventional commit messages linked to tickets. | Read-only |
 | `product-agent/` (00–06) | 7-stage formal pipeline (Requirements → Use Cases → Diagrams → Stories → Tickets). | Scoped per stage |
 
@@ -342,6 +403,7 @@ flowchart TD
 ## 🧠 Skills & Runbooks
 
 - **`tdd-workflow`**: Step-by-step TDD protocol, characterization testing for legacy code, and mutation testing.
+- **`debug-workflow`**: Root-cause investigation loop (reproduce → localize → hypothesize → test) that hands off to the TDD cycle for the fix.
 - **`architecture-first`**: Enforces pattern-matching against existing project idioms before creating new abstractions.
 - **`coding-patterns`**: Separation of Concerns (Controller → Service/Action → Model/Repository) and defensive coding.
 - **`explore-codebase`**: High-efficiency search recipes avoiding token waste.
@@ -357,9 +419,12 @@ workflow-ssd-plugin/
 │   └── plugin.json                    # Plugin manifest
 ├── README.md                          # Main documentation & user guide
 ├── commands/                          # Slash commands catalog
+│   ├── audit.md
 │   ├── change.md
 │   ├── commit.md
 │   ├── compress.md
+│   ├── debug.md
+│   ├── document.md
 │   ├── feature.md
 │   ├── meta-prompt.md
 │   ├── preserve.md
@@ -368,11 +433,14 @@ workflow-ssd-plugin/
 │   ├── ssd-init.md
 │   └── ticket-translator.md
 ├── agents/                            # Specialized subagent definitions
+│   ├── bug-investigator.md
 │   ├── commit-message-writer.md
 │   ├── dba-optimizer.md
+│   ├── doc-writer.md
 │   ├── fullstack-developer.md
 │   ├── functional-analyst.md
 │   ├── product-owner.md
+│   ├── runtime-verifier.md
 │   ├── spec-reviewer.md
 │   ├── tdd-implementer.md
 │   ├── tdd-refactorer.md
@@ -389,10 +457,15 @@ workflow-ssd-plugin/
 │   ├── architecture-first/
 │   ├── coding-patterns/
 │   ├── data-model/
+│   ├── debug-workflow/
 │   ├── explore-codebase/
 │   └── tdd-workflow/
-└── templates/                         # OpenSpec templates for projects
+└── templates/                         # OpenSpec + context templates for projects
+    ├── AGENTS.md.template
     ├── CLAUDE.md.template
+    ├── docs/
+    │   ├── stories-index.md.template
+    │   └── tickets-index.md.template
     └── openspec/
         ├── circuit.md
         ├── design.md

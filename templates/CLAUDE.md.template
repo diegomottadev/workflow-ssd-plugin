@@ -76,6 +76,20 @@ All operations run from `{{WORKING_DIRECTORY}}`.
 | **Writing code with tests (TDD cycle)** | **Order: 1 `tdd-test-writer` 🔴 RED · 2 `tdd-implementer` 🟢 GREEN · 3 `tdd-refactorer` 🔵 REFACTOR.** Orchestrated by `/feature` and `/change apply`. `fullstack-developer` is reserved for scoped quick fixes via `/change ff`. |
 | **Work with specifications (feature or refactor)** | Slash command `/change` · OpenSpec framework |
 | **Turn raw business requirements into tickets** | Slash command `/requirement` — runs 7 stages with approval gates (orchestrating `agents/product-agent/`) |
+| **Root-cause a bug before fixing it** | Slash command `/debug` — reproduce → localize → hypothesize → test, then a regression test (RED) and minimal fix (GREEN) |
+| **PR descriptions, changelogs, release notes, postmortems** | Slash command `/document` |
+| **Nested context for a monorepo module/app/package** | Slash command `/audit` — see per-area `AGENTS.md` files listed below, if any |
+| **All stories/tickets across both tracks (fast-track and deep pipeline)** | [`docs/stories/README.md`](docs/stories/README.md) · [`docs/tickets/README.md`](docs/tickets/README.md) — index only, links to the real content in `openspec/changes/`, `openspec/archive/`, or `docs/stories\|tickets/<file>.md` |
+
+---
+
+## 🧩 Nested Context (AGENTS.md)
+
+> Populated by `/audit`. Only present in monorepos/multi-app codebases where a single root file can't capture per-area conventions. Leave empty (or delete this section) for a single cohesive app.
+
+| Area | Context File |
+|---|---|
+| _(none yet — run `/audit`)_ | |
 
 ---
 

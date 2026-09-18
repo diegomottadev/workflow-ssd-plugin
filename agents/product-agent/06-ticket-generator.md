@@ -13,7 +13,7 @@ tools:
 
 ## Output
 1. Individual tickets in `docs/tickets/<PREFIX>-<NN>-<slug>.md`.
-2. Master ticket index in `docs/tickets/README.md`.
+2. Master ticket index in `docs/tickets/README.md` (create it from `templates/docs/tickets-index.md.template` if missing) — one row per ticket: `ID` = `<PREFIX>-<NN>`, `Type` = the ticket type, `Track` = `refine --deep`, `Status` = `ready`, `Path` = `docs/tickets/<PREFIX>-<NN>-<slug>.md`. **Append, never overwrite** — rows from `/change propose|ff` may already be present.
 3. An OpenSpec change structure in `openspec/changes/<slug>/` (with `proposal.md`, `design.md`, `tasks.md`, `spec-delta.md`).
 
 ---
