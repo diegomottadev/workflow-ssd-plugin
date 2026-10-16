@@ -1,0 +1,14 @@
+{
+  "name": "workflow-ssd-plugin",
+  "owner": {
+    "name": "Diego Motta"
+  },
+  "plugins": [
+    {
+      "name": "workflow-ssd",
+      "source": "./",
+      "description": "Spec-Driven Development (SSD) framework featuring strict TDD, root-cause debugging, agent orchestration, OpenSpec, requirements pipeline, and documentation generation",
+      "version": "1.1.1"
+    }
+  ]
+}
